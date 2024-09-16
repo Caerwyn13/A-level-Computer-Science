@@ -6,7 +6,7 @@ dealt_cards = []  # Holds dealt cards so cards aren't dealt twice
 
 def GenerateCard() -> list:
   """
-  Returns a list in the form[VALUE, "SUIT"]
+  Returns a list in the form [VALUE, "SUIT"]
   """
   temp = []  # Temporary to check if card has been dealt already
   card = []
@@ -33,18 +33,46 @@ def Hit(user_cards):
   user_cards.append(GenerateCard())
 
 
-def Stay(user_cards):
-  print("Stay")
+def Stay(user_cards, user_value, dealer_cards, dealer_value):
+  print(f"You have chosen to stay with a value of {user_value}")
+
+  while True:
+    recent = GenerateCard()
+    dealer_cards.append(recent)  # Draw a card
+
+    # Recalculate dealer hand value
+    dealer_value = 0
+    for i in range(len(dealer_cards)):
+      dealer_value += dealer_cards[i][0]
+      print(f"Dealer drew a {recent}, his hand now being {dealer_value}")
+
+      #TODO: Add handling for dealer bust
+
+    if dealer_value >= 18:
+      break
+
+  # Dealer has a value of 18 or greater
+  if user_value > dealer_value:  # Player wins
+    print(f"You win with a value of {user_value} against a dealer value of" +
+          f"{dealer_value}!")
+    print("\033[42mCongrats!\033[0m")
+  elif user_value < dealer_value:  # Dealer wins
+    print(
+        f"You lose! Your hand was {user_value} but the dealer had {dealer_value}"
+    )
+
+  return 0
 
 
 def Split(user_cards):
-  print("Split")
+  print("Split [NOT YET IMPLEMENTED]")
 
 
 def main():
   user_cards = []  # Cards of the user
   dealer_cards = []  # Cards of the dealer
   print("========== BLACKJACK ==========")
+  print("Dealer stands on soft 18")
 
   user_cards.append(GenerateCard())  # Gives the user two cards
   user_cards.append(GenerateCard())
@@ -93,7 +121,8 @@ def main():
         case 1:
           Hit(user_cards)
         case 2:
-          Stay(user_cards)
+          Stay(user_cards, user_value, dealer_cards, dealer_value)
+          return 0
         case 3:
           if user_cards[0][0] == user_cards[1][0]:
             Split(user_cards)
