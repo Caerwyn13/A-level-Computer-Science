@@ -1,6 +1,6 @@
 import random
 
-suits = ["Ace", "Spades", "Hearts", "Clubs"]
+suits = ["Diamonds", "Spades", "Hearts", "Clubs"]
 dealt_cards = []  # Holds dealt cards so cards aren't dealt twice
 
 
@@ -44,9 +44,12 @@ def Stay(user_cards, user_value, dealer_cards, dealer_value):
     dealer_value = 0
     for i in range(len(dealer_cards)):
       dealer_value += dealer_cards[i][0]
-      print(f"Dealer drew a {recent}, his hand now being {dealer_value}")
+    
+    print(f"Dealer drew a {recent[0]} of {recent[1]}, his hand now being {dealer_value}")
 
-      #TODO: Add handling for dealer bust
+    if dealer_value > 21:
+      print("The dealer has bust! You win.")
+      return 0
 
     if dealer_value >= 18:
       break
