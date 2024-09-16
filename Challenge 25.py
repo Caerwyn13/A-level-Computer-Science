@@ -71,6 +71,12 @@ def main():
       for j in range(2):
         dealer_cards_display += " " + str(dealer_cards[i][j])
 
+    if user_value > 21:
+      print(
+          f"You have busted with a value of {user_value}! The dealer wins. Try again."
+      )
+      return 0
+
     print(f"You have{user_cards_display}, with a value of {user_value}")
     print(
         f"The dealer has{dealer_cards_display} and a face-down card, with a value of "
