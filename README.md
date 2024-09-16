@@ -5,7 +5,8 @@ There are 27 challenges in total, and I will be adding to this repository as I m
 ## Why is this a repository?
 My college uses replit for computer science, however replit has a limit of 10 hours of development time per month for the free version.
 Because I don't feel like paying for a program I don't use for anything other than school, I thought I would develop outside of replit,
-and only upload to replit when my college needs me to. 
+and only upload to replit when my college needs me to. Using github as a way to upload my code not only allows me to upload to replit,
+but also gives anyone curious the ability to see my work, rather than it being hidden away on my computer.
 
 # How can I run these programs?
 Make sure you have all the required libraries (listed below) installed, then run the `main.py` file using the command:
