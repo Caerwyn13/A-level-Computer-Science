@@ -44,11 +44,14 @@ def Stay(user_cards, user_value, dealer_cards, dealer_value):
     dealer_value = 0
     for i in range(len(dealer_cards)):
       dealer_value += dealer_cards[i][0]
-    
-    print(f"Dealer drew a {recent[0]} of {recent[1]}, his hand now being {dealer_value}")
+
+    print(
+        f"Dealer drew a {recent[0]} of {recent[1]}, his hand now being {dealer_value}"
+    )
 
     if dealer_value > 21:
-      print("The dealer has bust! You win.")
+      print("\nThe dealer has bust! You win.")
+      print("\033[42mCongrats!\033[0m")
       return 0
 
     if dealer_value >= 18:
@@ -108,7 +111,7 @@ def main():
       )
       return 0
 
-    print(f"You have{user_cards_display}, with a value of {user_value}")
+    print(f"\nYou have{user_cards_display}, with a value of {user_value}")
     print(
         f"The dealer has{dealer_cards_display} and a face-down card, with a value of "
         + f"{dealer_cards[0][0]} + ?")
