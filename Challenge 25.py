@@ -2,6 +2,8 @@ import random
 
 suits = ["Diamonds", "Spades", "Hearts", "Clubs"]
 dealt_cards = []  # Holds dealt cards so cards aren't dealt twice
+user_hand_s1 = []  # Holds user's hand for split
+user_hand_s2 = []
 
 
 def GenerateCard() -> list:
@@ -71,7 +73,16 @@ def Stay(user_cards, user_value, dealer_cards, dealer_value):
 
 
 def Split(user_cards):
-  print("Split [NOT YET IMPLEMENTED]")
+  # Splits user hand into two hands
+  print("You have chosen to split your hand")
+  user_hand_s1.append(user_cards[0])  # Splits user's hand into two hands
+  user_hand_s2.append(user_cards[1])
+
+  # Draw a card for each hand
+  user_hand_s1.append(GenerateCard())
+  user_hand_s2.append(GenerateCard())
+
+  #TODO: Add logic for splitting
 
 
 def main():
@@ -79,6 +90,8 @@ def main():
   dealer_cards = []  # Cards of the dealer
   print("========== BLACKJACK ==========")
   print("Dealer stands on soft 18")
+
+  #TODO: Add the ability to bet
 
   user_cards.append(GenerateCard())  # Gives the user two cards
   user_cards.append(GenerateCard())
