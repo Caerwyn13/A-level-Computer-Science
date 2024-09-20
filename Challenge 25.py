@@ -2,8 +2,8 @@ import random
 
 suits = ["Diamonds", "Spades", "Hearts", "Clubs"]
 dealt_cards = []  # Holds dealt cards so cards aren't dealt twice
-user_hand_s1 = []  # Holds user's hand for split
-user_hand_s2 = []
+user_s1 = []  # Holds user's hand for split
+user_s2 = []
 
 
 def GenerateCard() -> list:
@@ -75,14 +75,56 @@ def Stay(user_cards, user_value, dealer_cards, dealer_value):
 def Split(user_cards):
   # Splits user hand into two hands
   print("You have chosen to split your hand")
-  user_hand_s1.append(user_cards[0])  # Splits user's hand into two hands
-  user_hand_s2.append(user_cards[1])
+  user_s1.append(user_cards[0])  # Splits user's hand into two hands
+  user_s2.append(user_cards[1])
 
   # Draw a card for each hand
-  user_hand_s1.append(GenerateCard())
-  user_hand_s2.append(GenerateCard())
+  user_s1.append(GenerateCard())
+  user_s2.append(GenerateCard())
 
-  #TODO: Add logic for splitting
+  user_s1_value = handleUserSplit1()  # Get value from hand 1 once player has decided to stay
+
+
+def handleUserSplit1():
+    # Format user cards
+  user_s1_display = ""
+  user_s1_value = 0  # Reset user value to recalculate
+  for i in range(len(user_s1)):
+    for j in range(2):
+      user_s1_display += " " + str(user_s1[i][j])
+
+    user_s1_value += user_s1[i][0]
+    
+  print("======== SPLITTING ========")
+  print("This is hand 1 (Note you cannot split again)")
+  print(f"Your hand is {user_s1_display}")
+  
+  user_s1.append(GenerateCard())
+  print(f"You pulled a second card and got a {user_s1[1][0]} of {user_s1[1][1]}")
+  
+  while user_s1_value <= 21:
+    print(f"Your hand is {user_s1_display} with a total value of {user_s1_value}")
+    print("What would you like to do?")
+    
+    print("What do you want to do? (Enter the number)")
+    print("\t1. Hit")
+    print("\t2. Stay")
+    print("\t3. Split")
+    
+    try:
+      option = int(input("Choice: "))
+      match option:
+        case 1:
+          Hit(user_s1)
+        case 2:
+          # TODO: Move to user hand 2
+          return 0
+        case _:
+          print("Get outta my casino!")
+          return 1
+    except ValueError:
+      print("Get outta my casino!")
+      return 1
 
 
 def main():
