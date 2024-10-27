@@ -15,10 +15,10 @@ def generate_card() -> list:
 
 def calculate_hand_value(hand):
     """Calculates the hand value, treating Aces as 11 or 1."""
-    value = sum(card[0] for card in hand)
+    value = sum(card[0] if card[0] != 1 else 11 for card in hand)  # Treat each Ace initially as 11
     aces = sum(1 for card in hand if card[0] == 1)
 
-    while value > 21 and aces:
+    while value > 21 and aces > 0:  # Convert Ace(s) from 11 to 1 if over 21
         value -= 10
         aces -= 1
 
@@ -37,7 +37,7 @@ def display_hand(hand, hide_first_card=False):
         if hide_first_card and idx == 0:
             hand_display += " [Hidden card]"
         else:
-            hand_display += f" {card[0]} of {card[1]}"
+            hand_display += f" {card[0]} of {card[1]},"
     return hand_display
 
 
@@ -45,16 +45,16 @@ def main():
     balance = 100  # Starting balance for betting
     print("========== WELCOME TO BLACKJACK ==========")
     print("Dealer stands on soft 18")
-    print("Your starting balance is $100\n")
+    print("Your starting balance is £100\n")
 
     while True:
         if balance <= 0:
             print("You ran out of money. Game over!")
             break
 
-        print(f"Current balance: ${balance}")
+        print(f"Current balance: £{balance}")
         try:
-            bet = int(input("Place your bet: $"))
+            bet = int(input("Place your bet: £"))
             if bet > balance or bet <= 0:
                 print("Invalid bet. Please bet within your balance.")
                 continue
@@ -84,7 +84,7 @@ def main():
                 if option == 1:  # Hit
                     hit(user_hand)
                     user_value = calculate_hand_value(user_hand)
-                    print(f"\nYour hand now: {display_hand(user_hand)} (Value: {user_value})")
+                    print(f"\nYour hand now:{display_hand(user_hand)} (Value: {user_value})")
 
                     if user_value > 21:
                         print("You busted! Dealer wins.")
@@ -162,7 +162,7 @@ def main():
         # Ask to play again
         play_again = input("\nWould you like to play again? (y/n): ").strip().lower()
         if play_again != 'y':
-            print(f"You leave the casino with ${balance}. Thanks for playing!")
+            print(f"You leave the casino with £{balance}. Thanks for playing!")
             break
 
 
