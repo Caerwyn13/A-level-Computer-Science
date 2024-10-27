@@ -2,199 +2,169 @@ import random
 
 suits = ["Diamonds", "Spades", "Hearts", "Clubs"]
 dealt_cards = []  # Holds dealt cards so cards aren't dealt twice
-user_s1 = []  # Holds user's hand for split
-user_s2 = []
 
 
-def GenerateCard() -> list:
-  """
-  Returns a list in the form [VALUE, "SUIT"]
-  """
-  temp = []  # Temporary to check if card has been dealt already
-  card = []
-
-  value = random.randint(1, 11)
-  suit = random.randint(0, 3)
-  temp.append(value)
-  temp.append(suits[suit])
-
-  if temp not in dealt_cards:
-    card.append(value)
-    dealt_cards.append(value)
-    card.append(suits[suit])
-    dealt_cards.append(suits[suit])
-    return card
-
-  GenerateCard()
-  print("Something went wrong generating a card :(")
-  return [0]
+def generate_card() -> list:
+    """Generates a unique card in the form [VALUE, "SUIT"]."""
+    while True:
+        card = [random.randint(1, 11), suits[random.randint(0, 3)]]
+        if card not in dealt_cards:
+            dealt_cards.append(card)
+            return card
 
 
-def Hit(user_cards):
-  print("You have chosen to hit\n")
-  user_cards.append(GenerateCard())
+def calculate_hand_value(hand):
+    """Calculates the hand value, treating Aces as 11 or 1."""
+    value = sum(card[0] for card in hand)
+    aces = sum(1 for card in hand if card[0] == 1)
+
+    while value > 21 and aces:
+        value -= 10
+        aces -= 1
+
+    return value
 
 
-def Stay(user_cards, user_value, dealer_cards, dealer_value):
-  print(f"You have chosen to stay with a value of {user_value}")
-
-  while True:
-    recent = GenerateCard()
-    dealer_cards.append(recent)  # Draw a card
-
-    # Recalculate dealer hand value
-    dealer_value = 0
-    for i in range(len(dealer_cards)):
-      dealer_value += dealer_cards[i][0]
-
-    print(
-        f"Dealer drew a {recent[0]} of {recent[1]}, his hand now being {dealer_value}"
-    )
-
-    if dealer_value > 21:
-      print("\nThe dealer has bust! You win.")
-      print("\033[42mCongrats!\033[0m")
-      return 0
-
-    if dealer_value >= 18:
-      break
-
-  # Dealer has a value of 18 or greater
-  if user_value > dealer_value:  # Player wins
-    print(f"You win with a value of {user_value} against a dealer value of" +
-          f"{dealer_value}!")
-    print("\033[42mCongrats!\033[0m")
-  elif user_value < dealer_value:  # Dealer wins
-    print(
-        f"You lose! Your hand was {user_value} but the dealer had {dealer_value}"
-    )
-
-  return 0
+def hit(hand):
+    """Deals a new card to the specified hand."""
+    hand.append(generate_card())
 
 
-def Split(user_cards):
-  # Splits user hand into two hands
-  print("You have chosen to split your hand")
-  user_s1.append(user_cards[0])  # Splits user's hand into two hands
-  user_s2.append(user_cards[1])
-
-  # Draw a card for each hand
-  user_s1.append(GenerateCard())
-  user_s2.append(GenerateCard())
-
-  user_s1_value = handleUserSplit1()  # Get value from hand 1 once player has decided to stay
-
-
-def handleUserSplit1():
-    # Format user cards
-  user_s1_display = ""
-  user_s1_value = 0  # Reset user value to recalculate
-  for i in range(len(user_s1)):
-    for j in range(2):
-      user_s1_display += " " + str(user_s1[i][j])
-
-    user_s1_value += user_s1[i][0]
-    
-  print("======== SPLITTING ========")
-  print("This is hand 1 (Note you cannot split again)")
-  print(f"Your hand is {user_s1_display}")
-  
-  user_s1.append(GenerateCard())
-  print(f"You pulled a second card and got a {user_s1[1][0]} of {user_s1[1][1]}")
-  
-  while user_s1_value <= 21:
-    print(f"Your hand is {user_s1_display} with a total value of {user_s1_value}")
-    print("What would you like to do?")
-    
-    print("What do you want to do? (Enter the number)")
-    print("\t1. Hit")
-    print("\t2. Stay")
-    print("\t3. Split")
-    
-    try:
-      option = int(input("Choice: "))
-      match option:
-        case 1:
-          Hit(user_s1)
-        case 2:
-          # TODO: Move to user hand 2
-          return 0
-        case _:
-          print("Get outta my casino!")
-          return 1
-    except ValueError:
-      print("Get outta my casino!")
-      return 1
+def display_hand(hand, hide_first_card=False):
+    """Returns a string representation of the hand, optionally hiding the first card."""
+    hand_display = ""
+    for idx, card in enumerate(hand):
+        if hide_first_card and idx == 0:
+            hand_display += " [Hidden card]"
+        else:
+            hand_display += f" {card[0]} of {card[1]}"
+    return hand_display
 
 
 def main():
-  user_cards = []  # Cards of the user
-  dealer_cards = []  # Cards of the dealer
-  print("========== BLACKJACK ==========")
-  print("Dealer stands on soft 18")
+    balance = 100  # Starting balance for betting
+    print("========== WELCOME TO BLACKJACK ==========")
+    print("Dealer stands on soft 18")
+    print("Your starting balance is $100\n")
 
-  #TODO: Add the ability to bet
+    while True:
+        if balance <= 0:
+            print("You ran out of money. Game over!")
+            break
 
-  user_cards.append(GenerateCard())  # Gives the user two cards
-  user_cards.append(GenerateCard())
-  user_value = user_cards[0][0] + user_cards[1][0]  # Value of user's hand
+        print(f"Current balance: ${balance}")
+        try:
+            bet = int(input("Place your bet: $"))
+            if bet > balance or bet <= 0:
+                print("Invalid bet. Please bet within your balance.")
+                continue
+        except ValueError:
+            print("Invalid input! Bet must be a number.")
+            continue
 
-  dealer_cards.append(GenerateCard())  # Gives the dealer two cards
-  dealer_cards.append(GenerateCard())
-  dealer_value = dealer_cards[0][0] + dealer_cards[1][
-      0]  # Value of dealer's hand
+        # Generate initial hands for user and dealer
+        user_hand = [generate_card(), generate_card()]
+        dealer_hand = [generate_card(), generate_card()]
 
-  # Game loop until user stands or busts
-  while user_value <= 21:
-    # Format user and dealer cards
-    user_cards_display = ""
-    dealer_cards_display = ""
-    user_value = 0  # Reset user value to recalculate
-    for i in range(len(user_cards)):
-      for j in range(2):
-        user_cards_display += " " + str(user_cards[i][j])
+        # Calculate the initial values of both hands
+        user_value = calculate_hand_value(user_hand)
+        dealer_value = calculate_hand_value(dealer_hand)
 
-      user_value += user_cards[i][0]
+        print(f"\nYour hand:{display_hand(user_hand)}, with a total value of {calculate_hand_value(user_hand)}")
+        print(f"Dealer's hand:{display_hand(dealer_hand, hide_first_card=True)} and a face-down card")
 
-    for i in range(len(dealer_cards) - 1):
-      for j in range(2):
-        dealer_cards_display += " " + str(dealer_cards[i][j])
+        while calculate_hand_value(user_hand) <= 21:
+            print("\nWhat do you want to do? (Enter the number)")
+            print("\t1. Hit")
+            print("\t2. Stay")
+            print("\t3. Split (only if initial cards match)")
 
-    if user_value > 21:
-      print(
-          f"You have busted with a value of {user_value}! The dealer wins. Try again."
-      )
-      return 0
+            try:
+                option = int(input("Choice: "))
+                if option == 1:  # Hit
+                    hit(user_hand)
+                    user_value = calculate_hand_value(user_hand)
+                    print(f"\nYour hand now: {display_hand(user_hand)} (Value: {user_value})")
 
-    print(f"\nYou have{user_cards_display}, with a value of {user_value}")
-    print(
-        f"The dealer has{dealer_cards_display} and a face-down card, with a value of "
-        + f"{dealer_cards[0][0]} + ?")
+                    if user_value > 21:
+                        print("You busted! Dealer wins.")
+                        balance -= bet
+                        break
 
-    print("What do you want to do? (Enter the number)")
-    print("\t1. Hit")
-    print("\t2. Stay")
-    print("\t3. Split")
+                elif option == 2:  # Stay
+                    user_value = calculate_hand_value(user_hand)
+                    dealer_value = calculate_hand_value(dealer_hand)
 
-    try:
-      option = int(input("Choice: "))
-      match option:
-        case 1:
-          Hit(user_cards)
-        case 2:
-          Stay(user_cards, user_value, dealer_cards, dealer_value)
-          return 0
-        case 3:
-          if user_cards[0][0] == user_cards[1][0]:
-            Split(user_cards)
-          else:
-            print("You cannot split with these cards")
-        case _:
-          print("Get outta my casino!")
-          return 1
-    except ValueError:
-      print("Get outta my casino!")
-      return 1
+                    print(f"\nYou stay with a hand value of {user_value}")
+                    print(f"Dealer reveals their hand:{display_hand(dealer_hand)} (Value: {dealer_value})")
+
+                    while dealer_value < 18:
+                        hit(dealer_hand)
+                        dealer_value = calculate_hand_value(dealer_hand)
+                        print(f"Dealer draws a card. Dealer's hand:{display_hand(dealer_hand)} (Value: {dealer_value})")
+
+                    if dealer_value > 21:
+                        print("Dealer busts! You win.")
+                        balance += bet
+                    elif user_value > dealer_value:
+                        print("You win!")
+                        balance += bet
+                    elif user_value < dealer_value:
+                        print("Dealer wins!")
+                        balance -= bet
+                    else:
+                        print("It's a tie! Bet returned.")
+
+                    break
+
+                elif option == 3:  # Split
+                    if user_hand[0][0] == user_hand[1][0]:
+                        split_hand1 = [user_hand[0], generate_card()]
+                        split_hand2 = [user_hand[1], generate_card()]
+
+                        # Process split hands separately
+                        for i, split_hand in enumerate([split_hand1, split_hand2], start=1):
+                            print(f"\n--- Playing hand {i} ---")
+                            while calculate_hand_value(split_hand) <= 21:
+                                print(f"Hand {i}: {display_hand(split_hand)} (Value: {calculate_hand_value(split_hand)})")
+                                print("1. Hit\n2. Stay")
+
+                                split_option = int(input("Choice: "))
+                                if split_option == 1:
+                                    hit(split_hand)
+                                    if calculate_hand_value(split_hand) > 21:
+                                        print(f"Hand {i} busted!")
+                                        balance -= bet // 2
+                                        break
+                                elif split_option == 2:
+                                    break
+
+                        # Evaluate split hands against dealer
+                        for i, split_hand in enumerate([split_hand1, split_hand2], start=1):
+                            split_value = calculate_hand_value(split_hand)
+                            if split_value <= 21:
+                                print(f"\nEvaluating hand {i} against dealer")
+                                if split_value > dealer_value or dealer_value > 21:
+                                    print(f"Hand {i} wins!")
+                                    balance += bet // 2
+                                else:
+                                    print(f"Hand {i} loses!")
+                                    balance -= bet // 2
+                    else:
+                        print("You cannot split these cards.")
+
+                else:
+                    print("Invalid option.")
+
+            except ValueError:
+                print("Invalid input. Please choose a valid option.")
+
+        # Ask to play again
+        play_again = input("\nWould you like to play again? (y/n): ").strip().lower()
+        if play_again != 'y':
+            print(f"You leave the casino with ${balance}. Thanks for playing!")
+            break
 
 
-main()
+if __name__ == "__main__":
+    main()
