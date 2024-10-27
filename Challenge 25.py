@@ -35,7 +35,7 @@ def display_hand(hand, hide_first_card=False):
     hand_display = ""
     for idx, card in enumerate(hand):
         if hide_first_card and idx == 0:
-            hand_display += " [Hidden card]"
+            hand_display += "[Hidden card]"
         else:
             hand_display += f" {card[0]} of {card[1]},"
     return hand_display
@@ -71,7 +71,7 @@ def main():
         dealer_value = calculate_hand_value(dealer_hand)
 
         print(f"\nYour hand:{display_hand(user_hand)}, with a total value of {calculate_hand_value(user_hand)}")
-        print(f"Dealer's hand:{display_hand(dealer_hand, hide_first_card=True)} and a face-down card")
+        print(f"Dealer's hand:{display_hand(dealer_hand, hide_first_card=True)}")
 
         while calculate_hand_value(user_hand) <= 21:
             print("\nWhat do you want to do? (Enter the number)")
