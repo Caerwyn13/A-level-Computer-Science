@@ -5,10 +5,10 @@ import sys
 
 def get_word() -> list:
   word = []
-  temp = input("Player 1, enter your word: ").lower()
+  temp = input("Player 1, enter your word: ").upper()
 
   for i in range(0, len(temp)):
-    if temp[i] not in "qwertyuiopasdfghjklzxcvbnm":
+    if temp[i] not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
       print("Please enter alphabetical letters next time. Exiting...")
       sys.exit()
     word.append(temp[i])
@@ -55,7 +55,7 @@ def main():
       temp += user_word[i]
 
     print(f"WORD: {temp}\t\tGUESSES REMAINING {lives}")
-    guess = input("\nGuess a letter: ").lower()
+    guess = input("\nGuess a letter: ").upper()
     if len(guess) == len(word):
       if list(guess) == word:
         print("\n========== Congratulations ==========")
@@ -65,7 +65,7 @@ def main():
         return 0
     elif guess in user_word:
       print("That letter has already been guessed.")
-    elif guess not in "qwertyuiopasdfghjklzxcvbnm":
+    elif guess not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
       print("Please enter a letter.")
     else:
       update_word(guess, word, user_word)

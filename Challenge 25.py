@@ -42,10 +42,10 @@ def display_hand(hand, hide_first_card=False):
 
 
 def main():
-    balance = 100  # Starting balance for betting
+    balance = 1000  # Starting balance for betting
     print("========== WELCOME TO BLACKJACK ==========")
     print("Dealer stands on soft 18")
-    print("Your starting balance is £100\n")
+    print(f"Your starting balance is £{balance}\n")
 
     while True:
         if balance <= 0:
